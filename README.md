@@ -16,7 +16,6 @@ It uses:
   - Run `terraform plan` in one stage
   - Run `terraform apply` in another stage  
 
-
 ---
 
 ## 🚀 Key Features

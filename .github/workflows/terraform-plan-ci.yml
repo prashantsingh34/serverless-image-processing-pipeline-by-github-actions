@@ -115,13 +115,10 @@ jobs:
           path: /tmp
 
       - name: Wait for Manual Approval
-        uses: fjogeleit/manual-approval@v2
+        uses: trstringer/manual-approval@v1
         with:
           secret: ${{ secrets.GITHUB_TOKEN }}
           approvers: prashantsingh34
-          issueTitle: "Manual Approval Required"
-          issueBody: "Please approve or reject this deployment."
-          buttonText: "Approve"
 
 
       - name: Terraform apply

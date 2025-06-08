@@ -69,8 +69,7 @@ resource "aws_api_gateway_deployment" "my_deployment" {
   }
 
   depends_on = [
-    aws_api_gateway_integration.presigned_url_resource_get_integration,
-    aws_api_gateway_stage.my_stage
+    aws_api_gateway_integration.presigned_url_resource_get_integration
   ]
 }
 

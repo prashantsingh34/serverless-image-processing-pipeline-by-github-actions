@@ -34,7 +34,12 @@ jobs:
             echo "TF_VAR_env=${{ vars.env }}" >> $GITHUB_ENV
           else
             echo "echo ${{ vars.env }}"
+
+            echo "echo ${{ github.head_ref }}"
+            echo "echo ${{ github.base_ref }}"
+            echo "$GITHUB_EVENT_NAME"
             echo "$GITHUB_REF"
+            echo "$GITHUB_REF_NAME"
             echo "TF_VAR_env=${GITHUB_REF##*/}" >> $GITHUB_ENV
           fi
         env:

@@ -11,8 +11,6 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "prashant-887496"
-    key    = "terraform/terraform.tfstate"
     region = "us-east-1"
   }
 }

@@ -68,16 +68,19 @@ jobs:
 
       - name: List terraform folder contents
         run: ls -lart ${{ env.TF_DIR }}
+        
+      - name: Check .terraform contents
+        run: ls -la ${{ env.TF_DIR }}/.terraform
 
       - name: Upload .terraform folder contents (only on main)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plugins
           path: ${{ env.TF_DIR }}/.terraform
 
       - name: Upload Lambda zip files
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: lambda-zips

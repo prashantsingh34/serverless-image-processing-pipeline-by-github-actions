@@ -59,6 +59,7 @@ jobs:
         working-directory: ${{ env.TF_DIR }}
 
   deploy-uat:
+    needs: [deploy-staging]
     environment: uat
     runs-on: ubuntu-latest
     permissions:
@@ -112,6 +113,7 @@ jobs:
 
 
   deploy-prod:
+    needs: [deploy-staging, deploy-uat]
     environment: prod
     runs-on: ubuntu-latest
     permissions:

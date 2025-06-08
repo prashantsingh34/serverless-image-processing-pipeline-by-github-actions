@@ -31,7 +31,7 @@ jobs:
       - name: Set TF_VAR_env
         run: |
           if [[ "$GITHUB_EVENT_NAME" == "push" && "$GITHUB_REF" == "refs/heads/main" ]]; then
-            echo "TF_VAR_env=${{ vars.MY_VAR }} >> $GITHUB_ENV
+            echo "TF_VAR_env=${{ vars.MY_VAR }}" >> $GITHUB_ENV
           else
             echo "TF_VAR_env=${GITHUB_REF##*/}" >> $GITHUB_ENV
           fi

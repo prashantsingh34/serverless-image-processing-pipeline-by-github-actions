@@ -41,8 +41,7 @@ jobs:
           # DEPLOY_ENVIRONMENT: ${{ job.env }}
 
       - name: environment variable
-        run: |
-          - echo "Environment is $TF_VAR_env"
+        run: echo "Environment is $TF_VAR_env"
       - name: Terraform init
         run: terraform init
         working-directory: ${{ env.TF_DIR }}

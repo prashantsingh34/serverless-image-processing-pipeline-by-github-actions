@@ -32,7 +32,7 @@ jobs:
           if [[ "${{ github.head_ref }}" == "pull_request" ]]; then
             echo "TF_VAR_env=${GITHUB_REF##*/}" >> $GITHUB_ENV
           else
-            echo "TF_VAR_env=${{ github.job.environment }} >> $GITHUB_ENV
+            echo "TF_VAR_env=${{ github.job.environment }}" >> $GITHUB_ENV
           fi
 
       - name: environment variable

@@ -16,7 +16,7 @@ resource "aws_lambda_function" "generate_presigned_url_lambda" {
   layers           = [aws_lambda_layer_version.python_deps_layer.arn]
   filename         = data.archive_file.presigned_url_zip.output_path
   source_code_hash = data.archive_file.presigned_url_zip.output_base64sha256
-  env {
+  environment {
     variables = {
       SOURCE_BUCKET = aws_s3_bucket.file_to_be_processed.bucket
       TABLE_NAME    = aws_dynamodb_table.image_upload_jobs.name
@@ -45,7 +45,7 @@ resource "aws_lambda_function" "extract_s3_object_metadata_lambda" {
   layers           = [aws_lambda_layer_version.python_deps_layer.arn]
   filename         = data.archive_file.extract_s3_object_metadata_zip.output_path
   source_code_hash = data.archive_file.extract_s3_object_metadata_zip.output_base64sha256
-  env {
+  environment {
     variables = {
       SOURCE_BUCKET = aws_s3_bucket.file_to_be_processed.bucket
     }
@@ -75,7 +75,7 @@ resource "aws_lambda_function" "generate_image_to_text_lambda" {
   layers           = [aws_lambda_layer_version.python_deps_layer.arn]
   filename         = data.archive_file.generate_image_to_text_zip.output_path
   source_code_hash = data.archive_file.generate_image_to_text_zip.output_base64sha256
-  env {
+  environment {
     variables = {
       SOURCE_BUCKET = aws_s3_bucket.file_to_be_processed.bucket,
       DEST_BUCKET= aws_s3_bucket.processed_file_bucket.bucket,

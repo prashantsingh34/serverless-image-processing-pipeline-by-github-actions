@@ -9,6 +9,7 @@ env:
 
 jobs:
   terraform-plan:
+    environment: dev
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     permissions:
@@ -27,19 +28,21 @@ jobs:
       - name: setup terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: Set environment variable for PR or branch
+      - name: Set TF_VAR_env
         run: |
-          if [[ "${{ github.head_ref }}" == "pull_request" ]]; then
-            echo "Its a PR"
-            echo "TF_VAR_env=${GITHUB_REF##*/}" >> $GITHUB_ENV
+          if [[ "$GITHUB_EVENT_NAME" == "push" && "$GITHUB_REF" == "refs/heads/main" ]]; then
+            echo "TF_VAR_env=${{ vars.MY_VAR }} >> $GITHUB_ENV
           else
-            echo "Its main branch"
-            echo "TF_VAR_env=${{ github.job.environment }}" >> $GITHUB_ENV
+            echo "TF_VAR_env=${GITHUB_REF##*/}" >> $GITHUB_ENV
           fi
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REF: ${{ github.ref }}
+          # DEPLOY_ENVIRONMENT: ${{ job.env }}
 
       - name: environment variable
-        run: echo "Environment is $TF_VAR_env"
-
+        run: |
+          - echo "Environment is $TF_VAR_env"
       - name: Terraform init
         run: terraform init
         working-directory: ${{ env.TF_DIR }}

@@ -5,7 +5,7 @@ on:
 
 env:
   TF_DIR: ./terraform
-
+  BUCKET_NAME: ${{ vars.bucket }}
 jobs:
   dev-terraform-plan-apply:
     environment: dev
@@ -39,7 +39,7 @@ jobs:
       - name: environment variable
         run: echo "Environment is $TF_VAR_env"
       - name: Terraform init
-        run: terraform init
+        run: terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=terraform/${TF_VAR_env}/terraform.tfstate"
         working-directory: ${{ env.TF_DIR }}
 
       - name: Set up Python

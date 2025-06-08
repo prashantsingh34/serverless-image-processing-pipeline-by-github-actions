@@ -4,7 +4,7 @@ on:
     branches: [main]
 env:
   TF_DIR: ./terraform
-
+  BUCKET_NAME: ${{ vars.bucket }}
 jobs:
   non-dev-terraform-plan-apply:
     environment: staging

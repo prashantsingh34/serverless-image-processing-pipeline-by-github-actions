@@ -30,13 +30,15 @@ jobs:
       - name: Set environment variable for PR or branch
         run: |
           if [[ "${{ github.head_ref }}" == "pull_request" ]]; then
+            echo "Its a PR"
             echo "TF_VAR_env=${GITHUB_REF##*/}" >> $GITHUB_ENV
           else
+            echo "Its main branch"
             echo "TF_VAR_env=${{ github.job.environment }}" >> $GITHUB_ENV
           fi
 
       - name: environment variable
-        run: echo "Environment is $TF_VAR_environment"
+        run: echo "Environment is $TF_VAR_env"
 
       - name: Terraform init
         run: terraform init
@@ -77,8 +79,8 @@ jobs:
           name: tfplan
           path: ${{ env.TF_DIR }}/tfplan
 
-      - name: List terraform folder contents
-        run: ls -lart ${{ env.TF_DIR }}
+      # - name: List terraform folder contents
+      #   run: ls -lart ${{ env.TF_DIR }}
         
 
       - name: Upload .terraform folder contents (only on main)

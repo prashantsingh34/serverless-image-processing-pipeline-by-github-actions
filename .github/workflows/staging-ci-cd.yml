@@ -6,7 +6,7 @@ env:
   TF_DIR: ./terraform
 
 jobs:
-  terraform-plan:
+  non-dev-terraform-plan-apply:
     environment: staging
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' || github.event_name == 'push'
@@ -27,19 +27,12 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       - name: Set TF_VAR_env
-        run: |
-          if [[ "$GITHUB_EVENT_NAME" == "push" && "$GITHUB_REF" == "refs/heads/main" ]]; then
-            echo "TF_VAR_env=${{ vars.env }}" >> $GITHUB_ENV
-          else
-            echo "TF_VAR_env=$BRANCH_NAME" >> $GITHUB_ENV
-          fi
+        run: echo "TF_VAR_env=${{ vars.env }}" >> $GITHUB_ENV
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REF: ${{ github.ref }}
           BRANCH_NAME: ${{ github.head_ref }}
 
-      - name: environment variable
-        run: echo "Environment is $TF_VAR_env"
       - name: Terraform init
         run: terraform init
         working-directory: ${{ env.TF_DIR }}

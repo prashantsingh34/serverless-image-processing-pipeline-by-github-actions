@@ -1,0 +1,164 @@
+name: terraform plan & apply for staging and above workflows
+on:
+  push:
+    branches: [main]
+env:
+  TF_DIR: ./terraform
+  BUCKET_NAME: ${{ vars.bucket }}
+jobs:
+  deploy-staging:
+    environment: staging
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials(OIDC)
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::980069008226:role/github_actions_OIDC_role
+          aws-region: us-east-1
+      
+      - name: setup terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Set TF_VAR_env
+        run: echo "TF_VAR_env=${{ vars.env }}" >> $GITHUB_ENV
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REF: ${{ github.ref }}
+          BRANCH_NAME: ${{ github.head_ref }}
+
+      - name: Terraform init
+        run: terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=terraform/${TF_VAR_env}/terraform.tfstate"
+        working-directory: ${{ env.TF_DIR }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt -t python
+
+      - name: Create layer.zip
+        run: |
+          zip -r ${{ env.TF_DIR }}/layer.zip python/
+          rm -rf python
+
+      - name: Terraform plan
+        run: terraform plan -out=tfplan
+        working-directory: ${{ env.TF_DIR }}
+
+
+      - name: Terraform apply
+        run: terraform apply tfplan
+        working-directory: ${{ env.TF_DIR }}
+
+  deploy-uat:
+    environment: uat
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials(OIDC)
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::980069008226:role/github_actions_OIDC_role
+          aws-region: us-east-1
+      
+      - name: setup terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Set TF_VAR_env
+        run: echo "TF_VAR_env=${{ vars.env }}" >> $GITHUB_ENV
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REF: ${{ github.ref }}
+          BRANCH_NAME: ${{ github.head_ref }}
+
+      - name: Terraform init
+        run: terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=terraform/${TF_VAR_env}/terraform.tfstate"
+        working-directory: ${{ env.TF_DIR }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt -t python
+
+      - name: Create layer.zip
+        run: |
+          zip -r ${{ env.TF_DIR }}/layer.zip python/
+          rm -rf python
+
+      - name: Terraform plan
+        run: terraform plan -out=tfplan
+        working-directory: ${{ env.TF_DIR }}
+
+
+      - name: Terraform apply
+        run: terraform apply tfplan
+        working-directory: ${{ env.TF_DIR }}
+
+
+  deploy-prod:
+    environment: prod
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials(OIDC)
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::980069008226:role/github_actions_OIDC_role
+          aws-region: us-east-1
+      
+      - name: setup terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Set TF_VAR_env
+        run: echo "TF_VAR_env=${{ vars.env }}" >> $GITHUB_ENV
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REF: ${{ github.ref }}
+          BRANCH_NAME: ${{ github.head_ref }}
+
+      - name: Terraform init
+        run: terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=terraform/${TF_VAR_env}/terraform.tfstate"
+        working-directory: ${{ env.TF_DIR }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt -t python
+
+      - name: Create layer.zip
+        run: |
+          zip -r ${{ env.TF_DIR }}/layer.zip python/
+          rm -rf python
+
+      - name: Terraform plan
+        run: terraform plan -out=tfplan
+        working-directory: ${{ env.TF_DIR }}
+
+
+      - name: Terraform apply
+        run: terraform apply tfplan
+        working-directory: ${{ env.TF_DIR }}

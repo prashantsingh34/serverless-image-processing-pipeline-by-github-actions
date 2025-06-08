@@ -67,6 +67,9 @@ resource "aws_api_gateway_deployment" "my_deployment" {
       integration = aws_api_gateway_integration.presigned_url_resource_get_integration.id
     }))
   }
+  lifecycle {
+    create_before_destroy = true
+  }
 
   depends_on = [
     aws_api_gateway_integration.presigned_url_resource_get_integration

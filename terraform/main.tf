@@ -10,11 +10,7 @@ terraform {
       version = "2.7.1"
     }
   }
-  backend "s3" {
-    bucket = "prashant-887496"
-    key    = "terraform/terraform.tfstate"
-    region = "us-east-1"
-  }
+  backend "s3" {}
 }
 
 provider "aws" {

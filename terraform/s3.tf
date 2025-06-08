@@ -1,6 +1,6 @@
 
 resource "aws_s3_bucket" "file_to_be_processed" {
-  bucket = "file-to-be-processed-bucket-8874"
+  bucket = "${var.env}-file-to-be-processed-bucket-8874"
 
 }
 
@@ -45,7 +45,7 @@ resource "aws_s3_bucket_notification" "eventbridge_enable" {
 ## processed bucket
 
 resource "aws_s3_bucket" "processed_file_bucket" {
-  bucket = "processed-file-bucket-8874"
+  bucket = "${var.env}-processed-file-bucket-8874"
 
 }
 

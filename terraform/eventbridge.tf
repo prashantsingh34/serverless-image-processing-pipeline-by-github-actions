@@ -1,7 +1,7 @@
 
 
 resource "aws_cloudwatch_event_rule" "s3_object_created" {
-  name        = "s3-object-created-event"
+  name        = "${var.env}-s3-object-created-event"
   description = "Trigger Step Function on S3 object upload"
   event_pattern = jsonencode({
     "source": ["aws.s3"],

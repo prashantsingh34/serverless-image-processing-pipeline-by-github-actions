@@ -1,5 +1,5 @@
 resource "aws_iam_role" "generate_presigned_url_lambda_role" {
-  name        = "generate_presigned_url_lambda_role"
+  name        = "${var.env}-generate_presigned_url_lambda_role"
   description = "Role that allow to gernerrate presigned url and logs"
 
   assume_role_policy = jsonencode({
@@ -17,7 +17,7 @@ resource "aws_iam_role" "generate_presigned_url_lambda_role" {
 }
 
 resource "aws_iam_role_policy" "generate_presigned_url_lambda_cloudwatch_logs" {
-  name = "generate-presigned-url-lambda-cloudwatch-logs"
+  name = "${var.env}-generate-presigned-url-lambda-cloudwatch-logs"
   role = aws_iam_role.generate_presigned_url_lambda_role.id
 
   policy = jsonencode({
@@ -41,7 +41,7 @@ resource "aws_iam_role_policy" "generate_presigned_url_lambda_cloudwatch_logs" {
 }
 
 resource "aws_iam_role_policy" "generate_presigned_url_lambda_s3_access" {
-  name = "generate-presigned-url-lambda-s3-access"
+  name = "${var.env}-generate-presigned-url-lambda-s3-access"
   role = aws_iam_role.generate_presigned_url_lambda_role.id
 
   policy = jsonencode({
@@ -68,7 +68,7 @@ resource "aws_iam_role_policy" "generate_presigned_url_lambda_s3_access" {
 
 
 resource "aws_iam_role_policy" "rekognition_s3_policy" {
-  name        = "RekognitionS3AccessPolicy"
+  name        ="${var.env}-RekognitionS3AccessPolicy"
   role = aws_iam_role.generate_presigned_url_lambda_role.id
 
   # Define the policy in JSON format
@@ -93,7 +93,7 @@ resource "aws_iam_role_policy" "rekognition_s3_policy" {
 
 
 resource "aws_iam_role_policy" "generate_presigned_url_lambda_dynamo_put_item" {
-  name = "generate-presigned-url-lambda-dynamo-put"
+  name = "${var.env}-generate-presigned-url-lambda-dynamo-put"
   role = aws_iam_role.generate_presigned_url_lambda_role.id
 
   policy = jsonencode({
@@ -115,7 +115,7 @@ resource "aws_iam_role_policy" "generate_presigned_url_lambda_dynamo_put_item" {
 
 
 resource "aws_iam_role" "presigned_url_role" {
-  name = "presigned_url_role"
+  name = "${var.env}-presigned_url_role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -129,7 +129,7 @@ resource "aws_iam_role" "presigned_url_role" {
 }
 
 resource "aws_iam_policy" "presigned_url_api_invocation_policy" {
-  name = "presigned-url-api-invocation-policy"
+  name = "${var.env}-presigned-url-api-invocation-policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -152,7 +152,7 @@ resource "aws_iam_role_policy_attachment" "attach_policy_to_presigned_url_role" 
 
 
 resource "aws_iam_role" "eventbridge_invoke_stepfn_role" {
-  name = "eventbridge-start-stepfn-role"
+  name = "${var.env}-eventbridge-start-stepfn-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -167,7 +167,7 @@ resource "aws_iam_role" "eventbridge_invoke_stepfn_role" {
 }
 
 resource "aws_iam_role_policy" "eventbridge_invoke_stepfn_role_policy" {
-  name = "eventbridge-start-stepfn-role-policy"
+  name = "${var.env}-eventbridge-start-stepfn-role-policy"
   role = aws_iam_role.eventbridge_invoke_stepfn_role.id
 
   policy = jsonencode({
@@ -187,7 +187,7 @@ resource "aws_iam_role_policy" "eventbridge_invoke_stepfn_role_policy" {
 }
 
 resource "aws_iam_role" "step_fn_exec_role" {
-  name = "step_fn_s3_event_role"
+  name = "${var.env}-step_fn_s3_event_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -202,7 +202,7 @@ resource "aws_iam_role" "step_fn_exec_role" {
 }
 
 resource "aws_iam_role_policy" "step_Fn_invoke_lambda_policy" {
-  name = "step_fn_invoke_lambda-role-policy"
+  name = "${var.env}-step_fn_invoke_lambda-role-policy"
   role = aws_iam_role.step_fn_exec_role.id
 
   policy = jsonencode({
@@ -224,7 +224,7 @@ resource "aws_iam_role_policy" "step_Fn_invoke_lambda_policy" {
 
 
 resource "aws_iam_role_policy" "step_fn_s3_access" {
-  name = "Step_fn-s3-access"
+  name = "${var.env}-Step_fn-s3-access"
   role = aws_iam_role.step_fn_exec_role.id
 
   policy = jsonencode({
@@ -249,7 +249,7 @@ resource "aws_iam_role_policy" "step_fn_s3_access" {
 }
 
 resource "aws_iam_role_policy" "step_fn_dynamo_put_item" {
-  name = "step_fn-dynamo-put"
+  name = "${var.env}-step_fn-dynamo-put"
   role = aws_iam_role.step_fn_exec_role.id
 
   policy = jsonencode({

@@ -1,5 +1,5 @@
 resource "aws_api_gateway_rest_api" "process_file_api_gateway" {
-  name                         = "${var.environment}-process-file-api-gateway"
+  name                         = "${var.env}-process-file-api-gateway"
   disable_execute_api_endpoint = false
   lifecycle {
     create_before_destroy = true

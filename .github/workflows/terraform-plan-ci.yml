@@ -30,10 +30,13 @@ jobs:
       - name: Set environment variable for PR or branch
         run: |
           if [[ "${{ github.head_ref }}" == "pull_request" ]]; then
-            echo "TF_VAR_environment=${GITHUB_HEAD_REF}" >> $GITHUB_ENV
+            echo "TF_VAR_env=${GITHUB_REF##*/}" >> $GITHUB_ENV
           else
-            echo "TF_VAR_environment=${{ github.env }}" >> $GITHUB_ENV
+            echo "TF_VAR_env=${{ github.job.environment }} >> $GITHUB_ENV
           fi
+
+      - name: environment variable
+        run: echo "Environment is $TF_VAR_environment"
 
       - name: Terraform init
         run: terraform init

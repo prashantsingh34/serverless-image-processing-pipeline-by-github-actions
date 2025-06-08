@@ -69,13 +69,6 @@ jobs:
       - name: List terraform folder contents
         run: ls -lart ${{ env.TF_DIR }}
         
-      - name: Check .terraform contents
-        run: ls -la ${{ env.TF_DIR }}/.terraform
-
-      - name: Zip .terraform folder
-        run: |
-          cd ${{ env.TF_DIR }}
-          zip -r terraform-plugins.zip .terraform
 
       - name: Upload .terraform folder contents (only on main)
         # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -115,6 +108,10 @@ jobs:
       - name: setup terraform
         uses: hashicorp/setup-terraform@v2
 
+      - name: Terraform init
+        run: terraform init
+        working-directory: ${{ env.TF_DIR }}
+
       - name: Download plan file
         uses: actions/download-artifact@v4
         with:
@@ -134,19 +131,8 @@ jobs:
           name: lambda-zips
           path: /tmp
 
-      - name: Download terraform plugin files
-        uses: actions/download-artifact@v4
-        with:
-          name: terraform-plugins
-          path: ${{ env.TF_DIR }}
 
-      - name: Unzip .terraform plugins
-        run: |
-          cd ${{ env.TF_DIR }}
-          unzip terraform-plugins.zip
 
-      - name: List terraform folder contents
-        run: ls -la ${{ env.TF_DIR }}
 
 
       - name: List zipped lambda files in /tmp

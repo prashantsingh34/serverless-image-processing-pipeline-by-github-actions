@@ -27,6 +27,14 @@ jobs:
       - name: setup terraform
         uses: hashicorp/setup-terraform@v2
 
+      - name: Set environment variable for PR or branch
+        run: |
+          if [[ "${{ github.head_ref }}" == "pull_request" ]]; then
+            echo "TF_VAR_environment=${GITHUB_HEAD_REF}" >> $GITHUB_ENV
+          else
+            echo "TF_VAR_environment=${{ github.env }}" >> $GITHUB_ENV
+          fi
+
       - name: Terraform init
         run: terraform init
         working-directory: ${{ env.TF_DIR }}
@@ -84,6 +92,10 @@ jobs:
         with:
           name: lambda-zips
           path: ${{ env.TF_DIR }}/zipped_lambda/*.zip
+
+      - name: Terraform apply
+        run: terraform apply tfplan
+        working-directory: ${{ env.TF_DIR }}
 
   terraform-apply:
     name: Terraform Apply (Only After Merge)

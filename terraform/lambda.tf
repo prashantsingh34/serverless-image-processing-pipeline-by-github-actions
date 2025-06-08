@@ -7,7 +7,7 @@ data "archive_file" "presigned_url_zip" {
 
 resource "aws_lambda_function" "generate_presigned_url_lambda" {
 
-  function_name    = "presigned_url-lambda"
+  function_name    = "${var.environment}-presigned_url-lambda"
   role             = aws_iam_role.generate_presigned_url_lambda_role.arn
   handler          = "presigned_url.lambda_handler"
   runtime          = "python3.11"
@@ -36,7 +36,7 @@ data "archive_file" "extract_s3_object_metadata_zip" {
 
 resource "aws_lambda_function" "extract_s3_object_metadata_lambda" {
 
-  function_name    = "extract_s3_object_metadata"
+  function_name    = "${var.environment}-extract_s3_object_metadata"
   role             = aws_iam_role.generate_presigned_url_lambda_role.arn
   handler          = "extract_s3_object_metadata.lambda_handler"
   runtime          = "python3.11"
@@ -66,7 +66,7 @@ data "archive_file" "generate_image_to_text_zip" {
 
 resource "aws_lambda_function" "generate_image_to_text_lambda" {
 
-  function_name    = "generate_image_to_text"
+  function_name    = "${var.environment}-generate_image_to_text"
   role             = aws_iam_role.generate_presigned_url_lambda_role.arn
   handler          = "generate_image_to_text.lambda_handler"
   runtime          = "python3.11"

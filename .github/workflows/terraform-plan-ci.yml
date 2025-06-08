@@ -48,6 +48,12 @@ jobs:
         run: terraform plan -out=tfplan
         working-directory: ${{ env.TF_DIR }}
 
+      - name: Upload layer.zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: layer-zip
+          path: ${{ env.TF_DIR }}/layer.zip
+          
       - name: Move Lambda zip files
         run: |
           mkdir -p ${{ env.TF_DIR }}/zipped_lambda

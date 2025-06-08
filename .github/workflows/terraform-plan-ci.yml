@@ -108,11 +108,19 @@ jobs:
           name: layer-zip
           path: ${{ env.TF_DIR }}
 
+
       - name: Download Lambda zip files
         uses: actions/download-artifact@v4
         with:
           name: lambda-zips
           path: /tmp
+
+      - name: List terraform folder contents
+        run: ls -la ${{ env.TF_DIR }}
+
+
+      - name: List zipped lambda files in /tmp
+        run: ls -la /tmp/*.zip || echo "No zip files found in /tmp"
 
       # - name: Wait for Manual Approval
       #   uses: trstringer/manual-approval@v1
@@ -122,5 +130,5 @@ jobs:
 
 
       - name: Terraform apply
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply tfplan
         working-directory: ${{ env.TF_DIR }}

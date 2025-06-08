@@ -41,6 +41,14 @@ jobs:
         run: terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=terraform/${TF_VAR_env}/terraform.tfstate"
         working-directory: ${{ env.TF_DIR }}
 
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt -t python
+
+      - name: Create layer.zip
+        run: |
+          zip -r ${{ env.TF_DIR }}/layer.zip python/
+          rm -rf python
+          
       - name: Terraform apply
         run: terraform destroy -auto-approve
         working-directory: ${{ env.TF_DIR }}

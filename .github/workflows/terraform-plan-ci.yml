@@ -78,9 +78,9 @@ jobs:
         with:
           name: terraform-plugins
           path: |
-            ${{ env.TF_DIR }}/.terraform/**
-            ${{ env.TF_DIR }}/.terraform/.*
-            ${{ env.TF_DIR }}/.terraform/*/**
+            - ${{ env.TF_DIR }}/.terraform/**
+            - ${{ env.TF_DIR }}/.terraform/.*
+            - ${{ env.TF_DIR }}/.terraform/*/**
 
 
       - name: Upload Lambda zip files

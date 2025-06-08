@@ -128,6 +128,9 @@ jobs:
       #     secret: ${{ secrets.GITHUB_TOKEN }}
       #     approvers: prashantsingh34
 
+      - name: Terraform show
+        run: terraform show tfplan
+        working-directory: ${{ env.TF_DIR }}
 
       - name: Terraform apply
         run: terraform apply tfplan

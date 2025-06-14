@@ -38,8 +38,6 @@ jobs:
           BRANCH_NAME: ${{ github.head_ref }}
           # DEPLOY_ENVIRONMENT: ${{ job.env }}
 
-      - name: environment variable
-        run: echo "Environment is $TF_VAR_env"
       - name: Terraform init
         run: terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=terraform/${TF_VAR_env}/terraform.tfstate"
         working-directory: ${{ env.TF_DIR }}
@@ -71,25 +69,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install Python dependencies
+      - name: Install Python dependencies(If cache miss)
         if: steps.cache-pip.outputs.cache-hit != 'true'
         run: |
-          echo "Cache miss"
           pip install -r requirements.txt -t python
 
-      - name: Create layer.zip
+      - name: Create layer.zip(If cache miss)
         if: steps.cache-pip.outputs.cache-hit != 'true'
         run: |
           zip -r ${{ env.TF_DIR }}/layer.zip python/
 
-      - name: Update Lambda Layer
+      - name: Update Lambda Layer(If cache miss)
         if: steps.cache-pip.outputs.cache-hit != 'true'
         id: update_layer
         run: |
           NEW_ARN=$(aws lambda publish-layer-version --layer-name dependency_layer --zip-file fileb://${{ env.TF_DIR }}/layer.zip --query 'LayerVersionArn' --output text)
           echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
-
-
 
       - name: Terraform plan
         run: terraform plan -out=tfplan

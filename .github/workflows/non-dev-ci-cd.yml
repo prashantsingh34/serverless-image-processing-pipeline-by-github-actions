@@ -80,7 +80,7 @@ jobs:
         id: update_layer
         run: |
           NEW_ARN=$(aws lambda publish-layer-version --layer-name dependency_layer --zip-file fileb://${{ env.TF_DIR }}/layer.zip --query 'LayerVersionArn' --output text)
-          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
+          echo "TF_VAR_layer_arn=$NEW_ARN" >> $GITHUB_ENV
 
       - name: Terraform plan
         run: terraform plan -out=tfplan
@@ -163,7 +163,7 @@ jobs:
         id: update_layer
         run: |
           NEW_ARN=$(aws lambda publish-layer-version --layer-name dependency_layer --zip-file fileb://${{ env.TF_DIR }}/layer.zip --query 'LayerVersionArn' --output text)
-          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
+          echo "TF_VAR_layer_arn=$NEW_ARN" >> $GITHUB_ENV
 
       - name: Terraform plan
         run: terraform plan -out=tfplan
@@ -247,7 +247,7 @@ jobs:
         id: update_layer
         run: |
           NEW_ARN=$(aws lambda publish-layer-version --layer-name dependency_layer --zip-file fileb://${{ env.TF_DIR }}/layer.zip --query 'LayerVersionArn' --output text)
-          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
+          echo "TF_VAR_layer_arn=$NEW_ARN" >> $GITHUB_ENV
 
       - name: Terraform plan
         run: terraform plan -out=tfplan

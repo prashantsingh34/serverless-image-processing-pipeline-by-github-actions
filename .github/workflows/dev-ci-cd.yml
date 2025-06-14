@@ -52,8 +52,8 @@ jobs:
       - name: Get existing Lambda layer ARN
         id: get_current_arn
         run: |
-          EXISTING_ARN=$(aws lambda list-layer-versions --layer-name dependency_layer --max-items 1 --query 'LayerVersions[0].LayerVersionArn' --output text)
-          echo "::set-output name=arn::$EXISTING_ARN"
+          ARN=$(aws lambda list-layer-versions --layer-name dependency_layer --max-items 1 --query 'LayerVersions[0].LayerVersionArn' --output text)
+          echo "EXISTING_ARN=$ARN" >> $GITHUB_ENV
           echo $EXISTING_ARN
 
       - name: Cache pip packages

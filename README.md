@@ -15,7 +15,7 @@ It uses:
 - **Github Actions** for orchestrating the CI/CD pipeline:
   - Run `terraform plan` in one stage
   - Run `terraform apply` in another stage  
-
+- **Slack** Integration for real-time DevOps notifications
 ---
 
 ## 🚀 Key Features
@@ -26,7 +26,12 @@ It uses:
 - Secure file upload with pre-signed URLs  
 - Automated image text extraction using AWS Rekognition  
 - Clean CI/CD pipeline using Github Actions
-- Infrastructure as Code with Terraform and manual approval gate  
+- Infrastructure as Code with Terraform and manual approval gate 
+
+- Slack notifications on key pipeline events:
+    - Custom Slack message sent on deployment failures
+
+    - Notification sent to Slack after successful PR creation
 
 ---
 
@@ -57,16 +62,15 @@ It uses:
 
 ## ⚙️ CI/CD Pipeline Details
 
-- **CodeBuild Projects**:
-  - `TerraformPlan Step`: Runs `terraform init` + `terraform plan`
-  - `TerraformApply Step`: Runs `terraform apply` (after approval)
-
 - **Github Actions Stages**:
   1. **Source**: Pulls Terraform code from version control  
-  2. **Plan**: Executes `TerraformPlanBuild`  
+  2. **Plan**: Executes `terraform plan`  
   3. **Approval**: Manual approval stage  
-  4. **Apply**: Executes `TerraformApplyBuild`  
+  4. **Apply**: Executes `terraform apply`  
 
+- **Slack Integration:**
+  1. 🚨 Sends an alert to a Slack channel when a deployment fails 
+  2. 📣 Sends a Slack message on successful pull request creation 
 ---
 
 ## 📦 Tech Stack
@@ -80,3 +84,4 @@ It uses:
 - Terraform
 - AWS API Gateway
 - AWS Eventbridge  
+- Slack (custom integration for CI/CD notifications)

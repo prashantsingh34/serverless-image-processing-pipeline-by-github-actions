@@ -86,7 +86,7 @@ jobs:
         if: steps.cache-pip.outputs.cache-hit != 'true'
         id: update_layer
         run: |
-          NEW_ARN=$(aws lambda publish-layer-version --layer-name dependency_layer --zip-file fileb://layer.zip --query 'LayerVersionArn' --output text)
+          NEW_ARN=$(aws lambda publish-layer-version --layer-name dependency_layer --zip-file fileb://${{ env.TF_DIR }}/layer.zip --query 'LayerVersionArn' --output text)
           echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
 
 

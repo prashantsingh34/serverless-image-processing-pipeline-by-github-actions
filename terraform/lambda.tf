@@ -13,7 +13,7 @@ resource "aws_lambda_function" "generate_presigned_url_lambda" {
   runtime          = "python3.11"
   timeout          = 30
   memory_size      = 128
-  layers           = [aws_lambda_layer_version.python_deps_layer.arn]
+  layers           = [var.layer_arn]
   filename         = data.archive_file.presigned_url_zip.output_path
   source_code_hash = data.archive_file.presigned_url_zip.output_base64sha256
   environment {
@@ -42,7 +42,7 @@ resource "aws_lambda_function" "extract_s3_object_metadata_lambda" {
   runtime          = "python3.11"
   timeout          = 30
   memory_size      = 128
-  layers           = [aws_lambda_layer_version.python_deps_layer.arn]
+  layers           = [var.layer_arn]
   filename         = data.archive_file.extract_s3_object_metadata_zip.output_path
   source_code_hash = data.archive_file.extract_s3_object_metadata_zip.output_base64sha256
   environment {
@@ -72,7 +72,7 @@ resource "aws_lambda_function" "generate_image_to_text_lambda" {
   runtime          = "python3.11"
   timeout          = 30
   memory_size      = 128
-  layers           = [aws_lambda_layer_version.python_deps_layer.arn]
+  layers           = [var.layer_arn]
   filename         = data.archive_file.generate_image_to_text_zip.output_path
   source_code_hash = data.archive_file.generate_image_to_text_zip.output_base64sha256
   environment {
@@ -83,13 +83,4 @@ resource "aws_lambda_function" "generate_image_to_text_lambda" {
   }
 
 
-}
-
-
-
-resource "aws_lambda_layer_version" "python_deps_layer" {
-  filename            = "layer.zip"
-  layer_name          = "dependency_layer"
-  source_code_hash    = filebase64sha256("layer.zip")
-  compatible_runtimes = ["python3.11"]
 }

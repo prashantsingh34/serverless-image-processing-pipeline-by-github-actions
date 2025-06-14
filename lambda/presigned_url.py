@@ -32,7 +32,6 @@ def lambda_handler(event, context):
         },
         ExpiresIn=600
     )
-
     # Record in DynamoDB
     table = dynamodb.Table(TABLE_NAME)
     table.put_item(Item={
@@ -41,7 +40,6 @@ def lambda_handler(event, context):
         'uploaded_at': datetime.utcnow().isoformat(),
         'image_key': key
     })
-
     return {
         'statusCode': 200,
         'body': json.dumps({

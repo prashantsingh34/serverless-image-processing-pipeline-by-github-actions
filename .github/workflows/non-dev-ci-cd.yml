@@ -23,7 +23,9 @@ jobs:
           aws-region: us-east-1
       
       - name: setup terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.12.1"
 
       - name: Set TF_VAR_env
         run: echo "TF_VAR_env=${{ vars.env }}" >> $GITHUB_ENV
@@ -41,18 +43,48 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt -t python
+      - name: Get existing Lambda layer ARN
+        id: get_current_arn
+        run: |
+          ARN=$(aws lambda list-layer-versions \
+          --layer-name dependency_layer \
+          --query 'LayerVersions[?LayerVersionArn!=`null`].[LayerVersionArn]' \
+          --output text | head -n 1 | xargs)
+          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
+          echo $ARN 
 
-      - name: Create layer.zip
+      - name: Ensure python folder exists
+        run: mkdir -p python          
+
+      - name: Cache pip packages
+        id: cache-pip
+        uses: actions/cache@v4
+        with:
+          path: python
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python dependencies(If cache miss)
+        if: steps.cache-pip.outputs.cache-hit != 'true'
+        run: |
+          pip install -r requirements.txt -t python
+
+      - name: Create layer.zip(If cache miss)
+        if: steps.cache-pip.outputs.cache-hit != 'true'
         run: |
           zip -r ${{ env.TF_DIR }}/layer.zip python/
-          rm -rf python
+
+      - name: Update Lambda Layer(If cache miss)
+        if: steps.cache-pip.outputs.cache-hit != 'true'
+        id: update_layer
+        run: |
+          NEW_ARN=$(aws lambda publish-layer-version --layer-name dependency_layer --zip-file fileb://${{ env.TF_DIR }}/layer.zip --query 'LayerVersionArn' --output text)
+          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
 
       - name: Terraform plan
         run: terraform plan -out=tfplan
         working-directory: ${{ env.TF_DIR }}
-
 
       - name: Terraform apply
         run: terraform apply tfplan
@@ -94,18 +126,48 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt -t python
+      - name: Get existing Lambda layer ARN
+        id: get_current_arn
+        run: |
+          ARN=$(aws lambda list-layer-versions \
+          --layer-name dependency_layer \
+          --query 'LayerVersions[?LayerVersionArn!=`null`].[LayerVersionArn]' \
+          --output text | head -n 1 | xargs)
+          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
+          echo $ARN 
 
-      - name: Create layer.zip
+      - name: Ensure python folder exists
+        run: mkdir -p python          
+
+      - name: Cache pip packages
+        id: cache-pip
+        uses: actions/cache@v4
+        with:
+          path: python
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python dependencies(If cache miss)
+        if: steps.cache-pip.outputs.cache-hit != 'true'
+        run: |
+          pip install -r requirements.txt -t python
+
+      - name: Create layer.zip(If cache miss)
+        if: steps.cache-pip.outputs.cache-hit != 'true'
         run: |
           zip -r ${{ env.TF_DIR }}/layer.zip python/
-          rm -rf python
+
+      - name: Update Lambda Layer(If cache miss)
+        if: steps.cache-pip.outputs.cache-hit != 'true'
+        id: update_layer
+        run: |
+          NEW_ARN=$(aws lambda publish-layer-version --layer-name dependency_layer --zip-file fileb://${{ env.TF_DIR }}/layer.zip --query 'LayerVersionArn' --output text)
+          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
 
       - name: Terraform plan
         run: terraform plan -out=tfplan
         working-directory: ${{ env.TF_DIR }}
-
 
       - name: Terraform apply
         run: terraform apply tfplan
@@ -148,18 +210,48 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt -t python
+      - name: Get existing Lambda layer ARN
+        id: get_current_arn
+        run: |
+          ARN=$(aws lambda list-layer-versions \
+          --layer-name dependency_layer \
+          --query 'LayerVersions[?LayerVersionArn!=`null`].[LayerVersionArn]' \
+          --output text | head -n 1 | xargs)
+          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
+          echo $ARN 
 
-      - name: Create layer.zip
+      - name: Ensure python folder exists
+        run: mkdir -p python          
+
+      - name: Cache pip packages
+        id: cache-pip
+        uses: actions/cache@v4
+        with:
+          path: python
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python dependencies(If cache miss)
+        if: steps.cache-pip.outputs.cache-hit != 'true'
+        run: |
+          pip install -r requirements.txt -t python
+
+      - name: Create layer.zip(If cache miss)
+        if: steps.cache-pip.outputs.cache-hit != 'true'
         run: |
           zip -r ${{ env.TF_DIR }}/layer.zip python/
-          rm -rf python
+
+      - name: Update Lambda Layer(If cache miss)
+        if: steps.cache-pip.outputs.cache-hit != 'true'
+        id: update_layer
+        run: |
+          NEW_ARN=$(aws lambda publish-layer-version --layer-name dependency_layer --zip-file fileb://${{ env.TF_DIR }}/layer.zip --query 'LayerVersionArn' --output text)
+          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
 
       - name: Terraform plan
         run: terraform plan -out=tfplan
         working-directory: ${{ env.TF_DIR }}
-
 
       - name: Terraform apply
         run: terraform apply tfplan

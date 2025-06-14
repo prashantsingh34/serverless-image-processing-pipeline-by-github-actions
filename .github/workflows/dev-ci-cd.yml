@@ -54,7 +54,7 @@ jobs:
         run: |
           ARN=$(aws lambda list-layer-versions --layer-name dependency_layer --max-items 1 --query 'LayerVersions[0].LayerVersionArn' --output text)
           echo "EXISTING_ARN=$ARN" >> $GITHUB_ENV
-          echo $EXISTING_ARN
+          echo $ARN
 
       - name: Cache pip packages
         id: cache-pip

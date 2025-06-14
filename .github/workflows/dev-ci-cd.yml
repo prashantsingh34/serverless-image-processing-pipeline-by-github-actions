@@ -52,7 +52,10 @@ jobs:
       - name: Get existing Lambda layer ARN
         id: get_current_arn
         run: |
-          ARN=$(aws lambda list-layer-versions --layer-name dependency_layer --max-items 1 --query 'LayerVersions[0].LayerVersionArn' --output text)
+          ARN=$(aws lambda list-layer-versions \
+          --layer-name dependency_layer \
+          --query 'LayerVersions[?LayerVersionArn!=`null`].[LayerVersionArn]' \
+          --output text | head -n 1 | xargs)
           echo "EXISTING_ARN=$ARN" >> $GITHUB_ENV
           echo $ARN
 

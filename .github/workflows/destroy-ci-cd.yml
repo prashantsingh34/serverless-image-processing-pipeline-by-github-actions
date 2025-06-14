@@ -61,6 +61,4 @@ jobs:
       - name: Notify Slack	
         if: failure()
         run: |	
-          curl -X POST -H 'Content-type: application/json' -H 'Authorization: Bearer ${{ secrets.SLACK_TOKEN}}' --data "{\"channel\":\"dev-team-internal\",\"text\":\"Destroy Pipeline failed\\nDetails: *$${{ github.event.pull_request.head.ref }}*\\nAuthor: *${{github.event.pull_request.user.login}}*\\n${{github.event.pull_request.html_url}}\"}" https://slack.com/api/chat.postMessage	 
-
-        
+          curl -X POST -H 'Content-type: application/json' -H 'Authorization: Bearer ${{ secrets.SLACK_TOKEN}}' --data "{\"channel\":\"dev-team-internal\",\"text\":\"Destroy Pipeline failed\\nAuthor: *${{github.event.pull_request.user.login}}*\\n${{github.event.pull_request.html_url}}\"}" https://slack.com/api/chat.postMessage

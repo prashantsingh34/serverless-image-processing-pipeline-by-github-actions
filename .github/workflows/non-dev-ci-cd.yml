@@ -5,6 +5,7 @@ on:
 env:
   TF_DIR: ./terraform
   BUCKET_NAME: ${{ vars.bucket }}
+  SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
 jobs:
   deploy-staging:
     environment: staging
@@ -89,6 +90,14 @@ jobs:
       - name: Terraform apply
         run: terraform apply tfplan
         working-directory: ${{ env.TF_DIR }}
+      - name: Notify Slack	
+        if: failure()
+        run: |	
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            -H 'Authorization: Bearer ${{ secrets.SLACK_TOKEN }}' \
+            --data '{"channel":"dev-team-internal","text":":x: Deployment to Staging Failed"}' \
+            https://slack.com/api/chat.postMessage
 
   deploy-uat:
     needs: [deploy-staging]
@@ -173,6 +182,15 @@ jobs:
         run: terraform apply tfplan
         working-directory: ${{ env.TF_DIR }}
 
+      - name: Notify Slack	
+        if: failure()
+        run: |	
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            -H 'Authorization: Bearer ${{ secrets.SLACK_TOKEN }}' \
+            --data '{"channel":"dev-team-internal","text":":x: Deployment to UAT Failed"}' \
+            https://slack.com/api/chat.postMessage
+
 
   deploy-prod:
     needs: [deploy-staging, deploy-uat]
@@ -256,3 +274,12 @@ jobs:
       - name: Terraform apply
         run: terraform apply tfplan
         working-directory: ${{ env.TF_DIR }}
+
+      - name: Notify Slack	
+        if: failure()
+        run: |	
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            -H 'Authorization: Bearer ${{ secrets.SLACK_TOKEN }}' \
+            --data '{"channel":"dev-team-internal","text":":x: Deployment to Prod Failed"}' \
+            https://slack.com/api/chat.postMessage

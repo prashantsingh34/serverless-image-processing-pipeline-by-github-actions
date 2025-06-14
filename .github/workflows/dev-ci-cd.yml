@@ -56,7 +56,7 @@ jobs:
           --layer-name dependency_layer \
           --query 'LayerVersions[?LayerVersionArn!=`null`].[LayerVersionArn]' \
           --output text | head -n 1 | xargs)
-          echo "EXISTING_ARN=$ARN" >> $GITHUB_ENV
+          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
           echo $ARN 
 
       - name: Ensure python folder exists
@@ -78,8 +78,18 @@ jobs:
           pip install -r requirements.txt -t python
 
       - name: Create layer.zip
+        if: steps.cache-pip.outputs.cache-hit != 'true'
         run: |
           zip -r ${{ env.TF_DIR }}/layer.zip python/
+
+      - name: Update Lambda Layer
+        if: steps.cache-pip.outputs.cache-hit != 'true'
+        id: update_layer
+        run: |
+          NEW_ARN=$(aws lambda publish-layer-version --layer-name dependency_layer --zip-file fileb://layer.zip --query 'LayerVersionArn' --output text)
+          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
+
+
 
       - name: Terraform plan
         run: terraform plan -out=tfplan

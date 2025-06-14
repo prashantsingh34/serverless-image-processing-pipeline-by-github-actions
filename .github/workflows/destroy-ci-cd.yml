@@ -41,13 +41,15 @@ jobs:
         run: terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=terraform/${TF_VAR_env}/terraform.tfstate"
         working-directory: ${{ env.TF_DIR }}
 
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt -t python
-
-      - name: Create layer.zip
+      - name: Get existing Lambda layer ARN
+        id: get_current_arn
         run: |
-          zip -r ${{ env.TF_DIR }}/layer.zip python/
-          rm -rf python
+          ARN=$(aws lambda list-layer-versions \
+          --layer-name dependency_layer \
+          --query 'LayerVersions[?LayerVersionArn!=`null`].[LayerVersionArn]' \
+          --output text | head -n 1 | xargs)
+          echo "TF_VAR_layer_arn=$ARN" >> $GITHUB_ENV
+          echo $ARN 
           
       - name: Terraform apply
         run: terraform destroy -auto-approve

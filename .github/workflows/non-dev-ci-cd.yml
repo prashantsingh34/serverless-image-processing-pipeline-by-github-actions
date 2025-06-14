@@ -5,6 +5,7 @@ on:
 env:
   TF_DIR: ./terraform
   BUCKET_NAME: ${{ vars.bucket }}
+  SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
 jobs:
   deploy-staging:
     environment: staging

@@ -57,7 +57,7 @@ jobs:
           --query 'LayerVersions[?LayerVersionArn!=`null`].[LayerVersionArn]' \
           --output text | head -n 1 | xargs)
           echo "EXISTING_ARN=$ARN" >> $GITHUB_ENV
-          echo $ARN
+          echo $ARN 
 
       - name: Cache pip packages
         id: cache-pip

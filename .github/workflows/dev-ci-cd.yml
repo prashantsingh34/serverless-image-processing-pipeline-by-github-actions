@@ -80,7 +80,6 @@ jobs:
       - name: Create layer.zip
         run: |
           zip -r ${{ env.TF_DIR }}/layer.zip python/
-          rm -rf python
 
       - name: Terraform plan
         run: terraform plan -out=tfplan

@@ -47,8 +47,27 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Get existing Lambda layer ARN
+        id: get_current_arn
+        run: |
+          EXISTING_ARN=$(aws lambda list-layer-versions --layer-name dependency_layer --max-items 1 --query 'LayerVersions[0].LayerVersionArn' --output text)
+          echo "::set-output name=arn::$EXISTING_ARN"
+          echo $EXISTING_ARN
+
+      - name: Cache pip packages
+        id: cache-pip
+        uses: actions/cache@v4
+        with:
+          path: python
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install Python dependencies
-        run: pip install -r requirements.txt -t python
+        if: steps.cache-pip.outputs.cache-hit != 'true'
+        run: |
+          echo "Cache miss"
+          pip install -r requirements.txt -t python
 
       - name: Create layer.zip
         run: |

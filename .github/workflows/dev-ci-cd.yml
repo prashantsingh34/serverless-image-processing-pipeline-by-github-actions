@@ -101,4 +101,8 @@ jobs:
 
       - name: Notify Slack	
         run: |	
-          curl -X POST -H 'Content-type: application/json' -H 'Authorization: Bearer ${{ secrets.SLACK_TOKEN}}' --data "{\"channel\":\"dev-team-internal\",\"text\":\"Destroy Pipeline failed\\nAuthor: *${{github.event.pull_request.user.login}}*\\n${{github.event.pull_request.html_url}}\"}" https://slack.com/api/chat.postMessage
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            -H 'Authorization: Bearer ${{ secrets.SLACK_TOKEN }}' \
+            --data '{"channel":"dev-team-internal","text":":x: Deployment to Staging Failed"}' \
+            https://slack.com/api/chat.postMessage
